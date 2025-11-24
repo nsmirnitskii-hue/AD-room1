@@ -33,10 +33,13 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
 
     val allItems: Flow<List<Item>> = itemDao.getAllItems()
 
-    fun delete(item: Item)
-    ItemDao.delete(item)
+    suspend fun delete(item: Item){
+        itemDao.delete(item)
+    }
 
-    fun update(item: Item)
-    ItemDao.update(item)
+
+    suspend fun update(item: Item){
+        itemDao.update(item)
+    }
 
 }
