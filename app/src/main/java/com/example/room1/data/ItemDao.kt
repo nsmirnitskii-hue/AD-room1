@@ -20,8 +20,8 @@ interface ItemDao {
     @Query("SELECT * from items WHERE id = :id")
     fun getItem(id: Int): Flow<Item>
 
-    // Specify the conflict strategy as IGNORE, when the user tries to add an
-    // existing Item into the database Room ignores the conflict.
+    // Especifique la estrategia de conflicto como IGNORE,  cuando el usuario intenta agregar un
+    // elemento existente a la base de datos, la sala ignora el conflicto
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(item: Item)
 

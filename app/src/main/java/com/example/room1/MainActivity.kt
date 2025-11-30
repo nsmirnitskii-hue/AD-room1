@@ -19,9 +19,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.room1.ui.theme.Room1Theme
 import com.example.room1.ventanas.Footer
+import com.example.room1.ventanas.VentanaBorrar
 import com.example.room1.ventanas.VentanaBuscar
 import com.example.room1.ventanas.VentanaInicio
 import com.example.room1.ventanas.VentanaIntro
+import com.example.room1.ventanas.VentanaModificar
 
 class MainActivity : ComponentActivity() {
     companion object {
@@ -51,6 +53,8 @@ fun gestorVentanas(modifier: Modifier) {
             composable("inicio") { VentanaInicio(navController, modifier, userViewModel) }
             composable("ventanaIntro") { VentanaIntro(navController, modifier, userViewModel) }
             composable("ventanaBuscar") { VentanaBuscar(navController, modifier, userViewModel) }
+            composable("borrar") { VentanaBorrar(navController, modifier, userViewModel) }
+            composable("modificar") { VentanaModificar(navController, modifier, userViewModel) }
         }
     }
 

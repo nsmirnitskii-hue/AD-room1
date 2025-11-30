@@ -26,5 +26,7 @@ fun VentanaInicio(navController: NavController,modifier: Modifier, userViewModel
         Text("Soy la primera ventana")
         Button({ navController.navigate("ventanaIntro") }) { Text("Ir a intro") }
         Button({ navController.navigate("ventanaBuscar") }) { Text("Ir a Buscar") }
+        Button({ navController.navigate("borrar") }) { Text("Ir a Borrar") }
+        Button({ navController.navigate("modificar") }) { Text("Ir a Modificar") }
     }
 }
