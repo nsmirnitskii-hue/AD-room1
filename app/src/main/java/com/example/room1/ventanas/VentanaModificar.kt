@@ -30,59 +30,42 @@ import android.widget.Toast
 // Función composable para la ventana de modificación
 @Composable
 fun VentanaModificar(
-    navController: NavController,        // Controlador de navegación
-    modifier: Modifier = Modifier,       // Modificador para diseño
-    userViewModel: UserViewModel         // ViewModel compartido
-) {
-    // Obtener instancia del ViewModel de inventario
-    val inventoryViewModel: InventoryViewModel = viewModel()
-    // Obtener contexto de la aplicación
-    val context = LocalContext.current
-    // Scope para corrutinas
-    val scope = rememberCoroutineScope()
+    navController: NavController, modifier: Modifier = Modifier, userViewModel: UserViewModel)
+{
+    val inventoryViewModel: InventoryViewModel = viewModel() // Obtener instancia del ViewModel de inventario
+    val context = LocalContext.current // Obtener contexto de la aplicación
+    val scope = rememberCoroutineScope() // Scope para corrutinas
 
-    // Estados para los campos de texto
-    var textId by remember { mutableStateOf("") }           // ID del item a buscar
-    var textNombre by remember { mutableStateOf("") }       // Nuevo nombre
-    var textPrecio by remember { mutableStateOf("") }       // Nuevo precio
-    var textCantidad by remember { mutableStateOf("") }     // Nueva cantidad
-    // Estado para mensajes
+    var textId by remember { mutableStateOf("") }
+    var textNombre by remember { mutableStateOf("") }
+    var textPrecio by remember { mutableStateOf("") }
+    var textCantidad by remember { mutableStateOf("") }
     var mensaje by remember { mutableStateOf("") }
-    // Estado para color del mensaje
-    var mensajeColor by remember { mutableStateOf(Color.Red) }
-    // Estado para almacenar el item encontrado
-    var itemEncontrado by remember { mutableStateOf<Item?>(null) }
+    var mensajeColor by remember { mutableStateOf(Color.Red) } // Estado para color del mensaje
+    var itemEncontrado by remember { mutableStateOf<Item?>(null) } // Estado para almacenar el item encontrado
 
-    // Columna principal
     Column(
         modifier = modifier
-            .fillMaxSize()       // Ocupar toda la pantalla
-            .padding(16.dp),     // Padding interno
-        horizontalAlignment = Alignment.CenterHorizontally,  // Centrado horizontal
-        verticalArrangement = Arrangement.Top                // Alineación superior
-    ) {
-        // Título de la ventana
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top)
+    {
         Text("Modificar Item por ID")
 
-        // Campo para ingresar el ID del item a modificar
         OutlinedTextField(
-            value = textId,                              // Valor actual
-            onValueChange = { textId = it },             // Actualizar al cambiar
-            label = { Text("ID del item a modificar") }, // Etiqueta
-            modifier = Modifier.padding(vertical = 8.dp), // Espaciado
-            singleLine = true                            // Una línea
+            value = textId,
+            onValueChange = { textId = it },
+            label = { Text("ID del item a modificar") },
+            modifier = Modifier.padding(vertical = 8.dp),
+            singleLine = true
         )
 
-        // Botón para buscar el item
         Button(
             onClick = {
-                // Limpiar estados anteriores
                 mensaje = ""
                 itemEncontrado = null
-                // Convertir ID a número
                 val id = textId.trim().toIntOrNull()
-
-                // Verificar si el ID es válido
                 if (id != null) {
                     scope.launch {
                         try {
@@ -90,125 +73,110 @@ fun VentanaModificar(
                             inventoryViewModel.getItem(id).collect { item ->
                                 itemEncontrado = item
                                 if (item != null) {
-                                    // Si se encuentra, llenar los campos con los datos actuales
-                                    textNombre = item.name                    // Establecer nombre actual
-                                    textPrecio = item.price.toString()        // Establecer precio actual
-                                    textCantidad = item.quantity.toString()   // Establecer cantidad actual
+                                    // Si se encuentra, llena los campos con los datos actuales
+                                    textNombre = item.name
+                                    textPrecio = item.price.toString()
+                                    textCantidad = item.quantity.toString()
                                     mensaje = "Item encontrado. Complete los campos a modificar"
                                     mensajeColor = Color.Green
                                 } else {
-                                    // Item no encontrado
                                     mensaje = "No se encontró ningún item con ID: $id"
                                     mensajeColor = Color.Red
 
                                 }
                             }
                         } catch (e: Exception) {
-                            // Manejar errores
                             mensaje = "Error al buscar el item: ${e.message}"
                             mensajeColor = Color.Red
 
                         }
                     }
                 } else {
-                    // ID inválido
                     mensaje = "Por favor, ingrese un ID válido"
                     mensajeColor = Color.Red
                 }
             },
-            modifier = Modifier.padding(vertical = 8.dp)  // Espaciado
+            modifier = Modifier.padding(vertical = 8.dp)
         ) {
             Text("Buscar Item")
         }
 
         // Campo para modificar el nombre
         OutlinedTextField(
-            value = textNombre,                        // Valor actual
-            onValueChange = { textNombre = it },       // Actualizar al cambiar
-            label = { Text("Nombre") },                // Etiqueta
-            modifier = Modifier.padding(vertical = 8.dp), // Espaciado
-            singleLine = true,                         // Una línea
+            value = textNombre,
+            onValueChange = { textNombre = it },
+            label = { Text("Nombre") },
+            modifier = Modifier.padding(vertical = 8.dp),
+            singleLine = true,
             enabled = itemEncontrado != null           // Solo habilitado si hay item
         )
 
-        // Campo para modificar el precio
         OutlinedTextField(
-            value = textPrecio,                        // Valor actual
-            onValueChange = { textPrecio = it },       // Actualizar al cambiar
-            label = { Text("Precio") },                // Etiqueta
-            modifier = Modifier.padding(vertical = 8.dp), // Espaciado
-            singleLine = true,                         // Una línea
-            enabled = itemEncontrado != null           // Solo habilitado si hay item
+            value = textPrecio,
+            onValueChange = { textPrecio = it },
+            label = { Text("Precio") },
+            modifier = Modifier.padding(vertical = 8.dp),
+            singleLine = true,
+            enabled = itemEncontrado != null
         )
 
-        // Campo para modificar la cantidad
         OutlinedTextField(
-            value = textCantidad,                      // Valor actual
-            onValueChange = { textCantidad = it },     // Actualizar al cambiar
-            label = { Text("Cantidad") },              // Etiqueta
-            modifier = Modifier.padding(vertical = 8.dp), // Espaciado
-            singleLine = true,                         // Una línea
-            enabled = itemEncontrado != null           // Solo habilitado si hay item
+            value = textCantidad,
+            onValueChange = { textCantidad = it },
+            label = { Text("Cantidad") },
+            modifier = Modifier.padding(vertical = 8.dp),
+            singleLine = true,
+            enabled = itemEncontrado != null
         )
 
-        // Botón para guardar los cambios
         Button(
             onClick = {
-                // Verificar que hay un item encontrado
                 if (itemEncontrado != null) {
-                    // Convertir valores a los tipos correctos
-                    val precio = textPrecio.trim().toDoubleOrNull()    // Convertir a Double
-                    val cantidad = textCantidad.trim().toIntOrNull()   // Convertir a Int
-
-                    // Validar que todos los campos estén completos y sean válidos
+                    val precio = textPrecio.trim().toDoubleOrNull()
+                    val cantidad = textCantidad.trim().toIntOrNull()
                     if (textNombre.isNotEmpty() && precio != null && cantidad != null) {
                         scope.launch {
                             try {
                                 // Crear nuevo objeto Item con los datos actualizados
                                 val itemActualizado = Item(
-                                    id = itemEncontrado!!.id,      // Mantener el mismo ID
-                                    name = textNombre,             // Nuevo nombre
-                                    price = precio,                // Nuevo precio
-                                    quantity = cantidad            // Nueva cantidad
+                                    id = itemEncontrado!!.id,
+                                    name = textNombre,
+                                    price = precio,
+                                    quantity = cantidad
                                 )
                                 // Llamar al ViewModel para actualizar
                                 inventoryViewModel.update(itemActualizado)
                                 mensaje = "Item actualizado correctamente"
                                 mensajeColor = Color.Green
-                                // Mostrar Toast de confirmación
                                 Toast.makeText(context, "Item modificado", Toast.LENGTH_SHORT).show()
                             } catch (e: Exception) {
-                                // Manejar errores en la actualización
                                 mensaje = "Error al actualizar el item: ${e.message}"
                                 mensajeColor = Color.Red
                             }
                         }
                     } else {
-                        // Campos inválidos
                         mensaje = "Por favor, complete todos los campos con valores válidos"
                         mensajeColor = Color.Red
                     }
                 } else {
-                    // No hay item para modificar
                     mensaje = "Primero busque un item para modificar"
                     mensajeColor = Color.Red
                 }
             },
-            modifier = Modifier.padding(vertical = 8.dp),  // Espaciado
-            enabled = itemEncontrado != null               // Solo habilitado si hay item
+            modifier = Modifier.padding(vertical = 8.dp),
+            enabled = itemEncontrado != null
         ) {
             Text("Guardar Cambios")
         }
 
-        // Mostrar mensajes al usuario
         if (mensaje.isNotEmpty()) {
             Text(
-                text = mensaje,                            // Texto del mensaje
-                color = mensajeColor,                      // Color del mensaje
-                modifier = Modifier.padding(vertical = 8.dp) // Espaciado
+                text = mensaje,
+                color = mensajeColor,
+                modifier = Modifier.padding(vertical = 8.dp)
             )
         }
     }
 }
 
-// Función auxiliar para limpiar todos los campos
+

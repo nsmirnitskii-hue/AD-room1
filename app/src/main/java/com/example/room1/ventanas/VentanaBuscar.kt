@@ -37,9 +37,7 @@ fun VentanaBuscar(
     var items by remember { mutableStateOf<List<Item>>(emptyList()) }
     var textId by remember { mutableStateOf("") }
     var textNombreProducto by remember { mutableStateOf("") }
-
     var msgError by remember { mutableStateOf("") }
-
     val scope = rememberCoroutineScope()
 
     Column(
@@ -50,7 +48,6 @@ fun VentanaBuscar(
     ) {
         Text("Esta es la ventana de búsquedas")
 
-        // TextFields para búsqueda
         OutlinedTextField(
             value = textId,
             onValueChange = { textId = it },
@@ -67,7 +64,6 @@ fun VentanaBuscar(
             singleLine = true
         )
 
-        // Botón Buscar
         Button(
             onClick = {
                 msgError = ""
